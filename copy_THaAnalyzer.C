@@ -311,6 +311,7 @@ bool THaAnalyzer::EvalStage( int n )
   bool ret = true;
   if( theStage->cut_list ) {
     gHaCuts->EvalBlock( theStage->cut_list );
+    //Eca;
     if( theStage->master_cut && 
 	!theStage->master_cut->GetResult() ) {
       if( theStage->countkey >= 0 ) // stage may not have a counter
@@ -1008,9 +1009,12 @@ Int_t THaAnalyzer::PhysicsAnalysis( Int_t code )
 
   if( fDoBench ) fBench->Begin("Decode");
   TIter next(fApps);
+  // fApps is a TList of the apparatuses(copied from gHaApps), where next iterates through said list
+  // hence following while condition use next TIter to go through fApps
   while( THaApparatus* theApparatus = static_cast<THaApparatus*>( next() )) {
     theApparatus->Clear();
     theApparatus->Decode( *fEvData );
+    // Decode goes through Clear and Decode method of all detectors in Apparatus
   }
   if( fDoBench ) fBench->Stop("Decode");
   if( !EvalStage(kDecode) )  return kSkip;
@@ -1209,6 +1213,8 @@ Int_t THaAnalyzer::MainAnalysis()
 
   bool evdone = false;
   //=== Physics triggers ===
+  // tried to write in APEX_analyzer about this, basically 
+  
   if( fEvData->IsPhysicsTrigger() && fDoPhysics ) {
     Incr(kNevPhysics);
     retval = PhysicsAnalysis(retval);
