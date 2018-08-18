@@ -1,4 +1,4 @@
-//*-- Author :    Ole Hansen   12-May-2000
+1//*-- Author :    Ole Hansen   12-May-2000
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -311,7 +311,8 @@ bool THaAnalyzer::EvalStage( int n )
   bool ret = true;
   if( theStage->cut_list ) {
     gHaCuts->EvalBlock( theStage->cut_list );
-    //Eca;
+    // This seems to return an int (-1 if it goes wrong)
+    // not sure where this int goes
     if( theStage->master_cut && 
 	!theStage->master_cut->GetResult() ) {
       if( theStage->countkey >= 0 ) // stage may not have a counter
@@ -1018,6 +1019,7 @@ Int_t THaAnalyzer::PhysicsAnalysis( Int_t code )
   }
   if( fDoBench ) fBench->Stop("Decode");
   if( !EvalStage(kDecode) )  return kSkip;
+  // this stage just tests the cuts for decode
 
   //--- Main physics analysis. Calls the following for each defined apparatus
   //    THaSpectrometer::CoarseTrack  (only for spectrometers)
@@ -1038,6 +1040,7 @@ Int_t THaAnalyzer::PhysicsAnalysis( Int_t code )
   }
   if( fDoBench ) fBench->Stop("CoarseTracking");
   if( !EvalStage(kCoarseTrack) )  return kSkip;
+  // not sure why condition for coarse tracking appears after it is done
   
 
   if( fDoBench ) fBench->Begin("CoarseReconstruct");
